@@ -63,9 +63,8 @@ C. Editing the Cluster Template
 
 To install just the driver, you'll need to add a new cluster-init section to your **nodearray** and,
 if it's not the only **cluster-init** section, you'll need to give it an order between 1 and 1000 to 
-install in. In this example, tensorflow is installed after the nvidia driver:
+install in. In this example, tensorflow is installed after the nvidia driver:::
 
-::
   [[nodearray execute-gpu]]
     [[[cluster-init driver]]]
     Project = nvidia
@@ -81,9 +80,8 @@ install in. In this example, tensorflow is installed after the nvidia driver:
 
 The nVidia driver isn't terribly large, but the CUDA section is much larger than should fit on most
 cloud node root volumes. To install CUDA, you'll need to add a second volume to your instances to
-provide instalation space for the CUDA libraries. This volume must be mounted to **'nvidia_files'**.
+provide instalation space for the CUDA libraries. This volume must be mounted to **'nvidia_files'**:::
 
-::
   [[nodearray execute-gpu]]
     [[[cluster-init driver]]]
     Project = nvidia
