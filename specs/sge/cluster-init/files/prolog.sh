@@ -3,7 +3,9 @@
  # Startup script to allocate GPU devices.
  #
  # Kota Yamaguchi 2015 <kyamagu@vision.is.tohoku.ac.jp>
+
 . /etc/cluster-setup.sh
+
 # Query how many gpus to allocate.
 NGPUS=$(qstat -j $JOB_ID | sed -n "s/hard resource_list:.*gpu=\([[:digit:]]\+\).*/\1/p")
 if [ -z $NGPUS ]
@@ -14,12 +16,16 @@ if [ $NGPUS -le 0 ]
 then
   exit 0
 fi
+
+
 ENV_FILE=$SGE_JOB_SPOOL_DIR/environment
 touch $ENV_FILE
 if [ ! -f $ENV_FILE -o ! -w $ENV_FILE ]
 then
   exit 1
 fi
+
+
 # Allocate and lock GPUs.
 SGE_GPU=""
 i=0
@@ -37,11 +43,15 @@ do
     fi
   fi
 done
+
+
 if [ $i -lt $NGPUS ]
 then
   echo "ERROR: Only reserved $i of $NGPUS requested devices."
   exit 1
 fi
+
+
 # Set the environment.
 echo SGE_GPU="$(echo $SGE_GPU | sed -e 's/^ //')" >> $ENV_FILE
 exit 0
