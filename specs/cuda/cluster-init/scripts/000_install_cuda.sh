@@ -43,6 +43,17 @@ CUDA_INSTALLER=$( basename ${CUDA_URL} )
 
 CUDA_HOME=$CUDA_DIR/cuda-${CUDA_VERSION}
 
+cat <<EOF > /etc/profile.d/cuda-env.sh
+#!/bin/bash
+
+export CUDA_DIR=${CUDA_DIR}
+export CUDA_HOME=${CUDA_HOME}
+export CUDA_VERSION=${CUDA_VERSION}
+
+export LD_LIBRARY_PATH=${CUDA_HOME}/lib64:\${LD_LIBRARY_PATH}
+
+EOF
+chmod 755 /etc/profile.d/cuda-env.sh
 
 if [ -n "$(command -v yum)" ]; then
    yum groupinstall -y "Development tools"
@@ -64,7 +75,7 @@ cd $CUDA_DIR/tmp
 if [[ ${CUDA_URL} == http* ]]; then
     wget ${CUDA_URL}
 else
-    pogo get ${CUDA_URL} .
+    pogo --config=/opt/cycle/jetpack/config/chef-pogo.ini get ${CUDA_URL} .
 fi
 
 chmod a+x ${CUDA_INSTALLER}
@@ -78,6 +89,7 @@ else
     sh ./${CUDA_INSTALLER} --toolkit --silent --tmpdir=${CUDA_DIR}/tmp --toolkitpath=${CUDA_HOME}
 fi
 EXIT_CODE=$?
+
 
 echo "CUDA installation completed (status: ${EXIT_CODE})"
 exit ${EXIT_CODE}
