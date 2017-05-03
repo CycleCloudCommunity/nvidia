@@ -1,0 +1,4 @@
+# Run this until GPU attributes are updated on the host
+SHELL=/bin/bash
+* * * * * root /mnt/cluster-init/scratch/modify_gpu_count.cron.sh 
+
