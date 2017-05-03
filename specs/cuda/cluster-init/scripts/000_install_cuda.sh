@@ -10,6 +10,7 @@ CUDA_BUILD=$( jetpack config nvidia.cuda.build 2> /dev/null )
 
 CUDA_URL=$( jetpack config nvidia.cuda.url 2> /dev/null )
 
+CUDA_INSTALL_DRIVER=$( jetpack config nvidia.cuda.install_driver 2> /dev/null )
 
 if [ -z "${CUDA_DIR}" ]; then
     # cuda is large and should often be installed to a second volume
@@ -34,6 +35,9 @@ if [ -z "${CUDA_URL}" ]; then
         CUDA_URL="http://developer.download.nvidia.com/compute/cuda/${CUDA_VERSION}/Prod/local_installers/cuda_${CUDA_BUILD}.run"
     fi
 fi
+if [ -z "${CUDA_INSTALL_DRIVER}" ]; then
+    CUDA_INSTALL_DRIVER="false"
+fi
 
 CUDA_INSTALLER=$( basename ${CUDA_URL} )
 
@@ -55,7 +59,7 @@ if ! [ -a  $CUDA_HOME ]; then
   mkdir -p $CUDA_HOME
 fi
 
-cd /tmp
+cd $CUDA_DIR/tmp
 
 if [[ ${CUDA_URL} == http* ]]; then
     wget ${CUDA_URL}
@@ -65,11 +69,14 @@ fi
 
 chmod a+x ${CUDA_INSTALLER}
 
-# Auto-install the driver as well...
-# sh ./${CUDA_INSTALLER} --driver --toolkit --silent --tmpdir=${CUDA_DIR}/tmp --toolkitpath=${CUDA_HOME}
-
-# Install just the toolkit (can be installed on a non-GPU node)
-sh ./${CUDA_INSTALLER} --toolkit --silent --tmpdir=${CUDA_DIR}/tmp --toolkitpath=${CUDA_HOME}
+if [ "${CUDA_INSTALL_DRIVER}" == "true" ]; then
+    # Auto-install the driver as well...
+    # - no need for the driver spec and separate download
+    sh ./${CUDA_INSTALLER} --driver --toolkit --silent --tmpdir=${CUDA_DIR}/tmp --toolkitpath=${CUDA_HOME}
+else
+    # Install just the toolkit (can be installed on a non-GPU node)
+    sh ./${CUDA_INSTALLER} --toolkit --silent --tmpdir=${CUDA_DIR}/tmp --toolkitpath=${CUDA_HOME}
+fi
 EXIT_CODE=$?
 
 echo "CUDA installation completed (status: ${EXIT_CODE})"

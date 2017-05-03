@@ -31,6 +31,11 @@ fi
 chmod +x ${NVIDIA_DRIVER_INSTALLER}
 
 sh ./${NVIDIA_DRIVER_INSTALLER} -s -z --no-cc-version-check
+EXIT_CODE=$?
+if [ "${EXIT_CODE}" -ne 0 ]; then
+    echo "NVidia driver installation failed (status: ${EXIT_CODE}."
+    exit ${EXIT_CODE}
+fi
 
 # Tune NVIDIA settings
 nvidia-smi -pm 1
