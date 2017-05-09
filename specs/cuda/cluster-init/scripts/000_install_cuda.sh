@@ -10,7 +10,7 @@ CUDA_BUILD=$( jetpack config nvidia.cuda.build 2> /dev/null )
 
 CUDA_URL=$( jetpack config nvidia.cuda.url 2> /dev/null )
 
-CUDA_INSTALL_DRIVER=$( jetpack config nvidia.cuda.install_driver 2> /dev/null )
+CUDA_INSTALL_DRIVER=$( jetpack config nvidia.cuda.install_driver 2> /dev/null | tr '[:upper:]' '[:lower:]' )
 
 if [ -z "${CUDA_DIR}" ]; then
     # cuda is large and should often be installed to a second volume

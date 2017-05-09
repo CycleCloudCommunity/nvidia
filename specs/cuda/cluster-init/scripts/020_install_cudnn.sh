@@ -3,7 +3,7 @@
 
 . /etc/profile.d/cuda-env.sh
 
-CUDA_INSTALL_CUDNN=$( jetpack config nvidia.cuda.cudnn.install_cudnn 2> /dev/null )
+CUDA_INSTALL_CUDNN=$( jetpack config nvidia.cuda.cudnn.install_cudnn 2> /dev/null | tr '[:upper:]' '[:lower:]')
 
 CUDA_CUDNN_VERSION=$( jetpack config nvidia.cuda.cudnn.version 2> /dev/null )
 
