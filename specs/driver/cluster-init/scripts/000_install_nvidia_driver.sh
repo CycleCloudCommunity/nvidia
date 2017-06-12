@@ -23,10 +23,14 @@ fi
 cd /tmp
 
 # get and build the driver
-if [[ ${NVIDIA_DRIVER_URL} == http* ]]; then
-    wget ${NVIDIA_DRIVER_URL}
-else
-    pogo get ${NVIDIA_DRIVER_URL} .
+if [ ! -f ${NVIDIA_DRIVER_INSTALLER} ]; then
+    if [ -f ${CYCLECLOUD_SPEC_PATH}/files/${NVIDIA_DRIVER_INSTALLER} ]; then
+        cp ${CYCLECLOUD_SPEC_PATH}/files/${NVIDIA_DRIVER_INSTALLER} .
+    elif [[ ${NVIDIA_DRIVER_URL} == http* ]]; then
+        wget ${NVIDIA_DRIVER_URL}
+    else
+        pogo get ${NVIDIA_DRIVER_URL} .
+    fi
 fi
 chmod +x ${NVIDIA_DRIVER_INSTALLER}
 

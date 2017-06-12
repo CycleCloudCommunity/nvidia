@@ -72,13 +72,17 @@ fi
 
 cd $CUDA_DIR/tmp
 
-if [[ ${CUDA_URL} == http* ]]; then
-    wget ${CUDA_URL}
-else
-    pogo --config=/opt/cycle/jetpack/config/chef-pogo.ini get ${CUDA_URL} .
+if [ ! -f ${CUDA_INSTALLER} ]; then
+    if [ -f ${CYCLECLOUD_SPEC_PATH}/files/${CUDA_INSTALLER} ]; then
+        cp ${CYCLECLOUD_SPEC_PATH}/files/${CUDA_INSTALLER} .
+    elif [[ ${CUDA_URL} == http* ]]; then
+        wget ${CUDA_URL}
+    else
+        pogo --config=/opt/cycle/jetpack/config/chef-pogo.ini get ${CUDA_URL} .
+    fi
 fi
-
 chmod a+x ${CUDA_INSTALLER}
+
 
 if [ "${CUDA_INSTALL_DRIVER}" == "true" ]; then
     # Auto-install the driver as well...
@@ -89,6 +93,7 @@ else
     sh ./${CUDA_INSTALLER} --toolkit --silent --tmpdir=${CUDA_DIR}/tmp --toolkitpath=${CUDA_HOME}
 fi
 EXIT_CODE=$?
+
 
 
 echo "CUDA installation completed (status: ${EXIT_CODE})"

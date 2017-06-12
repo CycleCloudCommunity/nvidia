@@ -27,10 +27,14 @@ set -e
 
 cd $CUDA_DIR/tmp
 
-if [[ ${CUDA_CUDNN_URL} == http* ]]; then
-    wget ${CUDA_CUDNN_URL}
-else
-    pogo --config=/opt/cycle/jetpack/config/chef-pogo.ini get ${CUDA_CUDNN_URL} .
+if [ ! -f ${CUDA_CUDNN_INSTALLER} ]; then
+    if [ -f ${CYCLECLOUD_SPEC_PATH}/files/${CUDA_CUDNN_INSTALLER} ]; then
+        cp ${CYCLECLOUD_SPEC_PATH}/files/${CUDA_CUDNN_INSTALLER} .
+    elif [[ ${CUDA_CUDNN_URL} == http* ]]; then
+        wget ${CUDA_CUDNN_URL}
+    else
+        pogo --config=/opt/cycle/jetpack/config/chef-pogo.ini get ${CUDA_CUDNN_URL} .
+    fi
 fi
 
 mkdir ./cudnn
