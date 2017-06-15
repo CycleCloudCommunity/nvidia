@@ -10,33 +10,28 @@ else
 
     CUDA_DIR=$( jetpack config nvidia.cuda.dir 2> /dev/null )
 
-    CUDA_VERSION=$( jetpack config nvidia.cuda.version 2> /dev/null )
-
     if [ -z "${CUDA_DIR}" ]; then
         # cuda is large and should often be installed to a second volume
         # We also generally want to share it so that we don't have to install on every
         # node.
         CUDA_DIR="/shared/nvidia"
     fi
-    if [ -z "${CUDA_VERSION}" ]; then
-        CUDA_VERSION="8.0"
+
+    set -e
+
+    ln -sf ${CUDA_DIR}/cuda-env.sh /etc/profile.d/cuda-env.sh
+
+    source /etc/profile.d/cuda-env.sh
+
+    if [ -z "${CUDNN_VERSION}" ]; then
+        echo "ERROR: CUDA profile is incomplete.  Waiting for next converge."
+        exit -1
     fi
 
-    CUDA_HOME=$CUDA_DIR/cuda-${CUDA_VERSION}
-    
-    cat <<EOF > /etc/profile.d/cuda-env.sh
-#!/bin/bash
+    ln -sf ${CUDA_HOME} /usr/local/cuda
+    cp -a ${CUDA_DIR}/cub* /usr/local/
+    mkdir -p /usr/local/cudnn-${CUDNN_VERSION}
+    cp -a ${CUDA_DIR}/tmp/cudnn/* /usr/local/cudnn-${CUDNN_VERSION}/
 
-export CUDA_DIR=${CUDA_DIR}
-export CUDA_HOME=${CUDA_HOME}
-export CUDA_VERSION=${CUDA_VERSION}
-
-export LD_LIBRARY_PATH=${CUDA_HOME}/lib64:\${LD_LIBRARY_PATH}
-
-EOF
-    chmod 755 /etc/profile.d/cuda-env.sh
 fi
 
-
-
-    

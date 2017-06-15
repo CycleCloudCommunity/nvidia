@@ -43,6 +43,14 @@ CUDA_INSTALLER=$( basename ${CUDA_URL} )
 
 CUDA_HOME=${CUDA_DIR}/cuda-${CUDA_VERSION}
 
+if ! [ -a $CUDA_DIR/tmp ]; then
+  mkdir -p $CUDA_DIR/tmp
+fi
+
+if ! [ -a  $CUDA_HOME ]; then
+  mkdir -p $CUDA_HOME
+fi
+
 cat <<EOF > ${CUDA_DIR}/cuda-env.sh
 #!/bin/bash
 
@@ -50,25 +58,17 @@ export CUDA_DIR=${CUDA_DIR}
 export CUDA_HOME=${CUDA_HOME}
 export CUDA_VERSION=${CUDA_VERSION}
 
-export LD_LIBRARY_PATH=${CUDA_HOME}/lib64:\${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=${CUDA_HOME}/lib64/stubs:${CUDA_HOME}/lib64:\${LD_LIBRARY_PATH}
 
 EOF
 chmod 755 ${CUDA_DIR}/cuda-env.sh
-ln -s ${CUDA_DIR}/cuda-env.sh /etc/profile.d/cuda-env.sh
+ln -sf ${CUDA_DIR}/cuda-env.sh /etc/profile.d/cuda-env.sh
 
 if [ -n "$(command -v yum)" ]; then
    yum groupinstall -y "Development tools"
    yum install -y gcc-c++ gcc-gfortran vim
 else
     apt-get -y install linux-headers-$(uname -r) build-essential
-fi
-
-if ! [ -a $CUDA_DIR/tmp ]; then
-  mkdir -p $CUDA_DIR/tmp
-fi
-
-if ! [ -a  $CUDA_HOME ]; then
-  mkdir -p $CUDA_HOME
 fi
 
 cd $CUDA_DIR/tmp
@@ -96,6 +96,10 @@ fi
 EXIT_CODE=$?
 
 
+# fix nvidia symlink if missing
+if [ ! -f ${CUDA_HOME}/lib64/stubs/libnvidia-ml.so.1 ]; then
+    ln -s ${CUDA_HOME}/lib64/stubs/libnvidia-ml.so ${CUDA_HOME}/lib64/stubs/libnvidia-ml.so.1
+fi
 
 echo "CUDA installation completed (status: ${EXIT_CODE})"
 exit ${EXIT_CODE}
