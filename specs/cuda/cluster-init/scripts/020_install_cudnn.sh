@@ -37,10 +37,21 @@ if [ ! -f ${CUDA_CUDNN_INSTALLER} ]; then
     fi
 fi
 
+rm -rf ./cudnn
 mkdir ./cudnn
 tar xzf ${CUDA_CUDNN_INSTALLER} -C ./cudnn --strip-components=1
 
 cp -a ./cudnn/* ${CUDA_HOME}/
+mkdir -p /usr/local/cudnn-${CUDA_CUDNN_VERSION}
+cp -a ./cudnn/* /usr/local/cudnn-${CUDA_CUDNN_VERSION}/
+
+cat <<EOF >> ${CUDA_DIR}/cuda-env.sh
+
+export CUDNN_VERSION=$CUDA_CUDNN_VERSION
+export CUDNN_HOME=/usr/local/cudnn-${CUDA_CUDNN_VERSION}
+
+EOF
+
 
 echo "CUDNN installed."
 

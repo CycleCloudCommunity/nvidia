@@ -41,9 +41,9 @@ fi
 
 CUDA_INSTALLER=$( basename ${CUDA_URL} )
 
-CUDA_HOME=$CUDA_DIR/cuda-${CUDA_VERSION}
+CUDA_HOME=${CUDA_DIR}/cuda-${CUDA_VERSION}
 
-cat <<EOF > /etc/profile.d/cuda-env.sh
+cat <<EOF > ${CUDA_DIR}/cuda-env.sh
 #!/bin/bash
 
 export CUDA_DIR=${CUDA_DIR}
@@ -53,7 +53,8 @@ export CUDA_VERSION=${CUDA_VERSION}
 export LD_LIBRARY_PATH=${CUDA_HOME}/lib64:\${LD_LIBRARY_PATH}
 
 EOF
-chmod 755 /etc/profile.d/cuda-env.sh
+chmod 755 ${CUDA_DIR}/cuda-env.sh
+ln -s ${CUDA_DIR}/cuda-env.sh /etc/profile.d/cuda-env.sh
 
 if [ -n "$(command -v yum)" ]; then
    yum groupinstall -y "Development tools"
