@@ -58,7 +58,8 @@ export CUDA_DIR=${CUDA_DIR}
 export CUDA_HOME=${CUDA_HOME}
 export CUDA_VERSION=${CUDA_VERSION}
 
-export LD_LIBRARY_PATH=${CUDA_HOME}/lib64/stubs:${CUDA_HOME}/lib64:\${LD_LIBRARY_PATH}
+# Ensure that the /usr/lib64 directory is first so each node picks up its local driver
+export LD_LIBRARY_PATH=/usr/lib64:${CUDA_HOME}/lib64/stubs:${CUDA_HOME}/lib64:\${LD_LIBRARY_PATH}
 
 EOF
 chmod 755 ${CUDA_DIR}/cuda-env.sh

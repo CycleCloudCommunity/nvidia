@@ -2,9 +2,13 @@
 # This script will fail until the host has been authorized by SGE. Once that's
 # done, it should delete the cron job.
 
+set -e
+set -x
+
+. /etc/profile
 . /etc/cluster-setup.sh
 
-if [ -n "$(command -v yum)" ]; then
+if [ -z "$(command -v yum)" ]; then
     export gpucount=0
 else
     export gpucount=$( nvidia-smi --query-gpu=name --format=csv,noheader | wc -l )

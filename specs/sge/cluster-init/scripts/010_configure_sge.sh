@@ -1,6 +1,10 @@
 #! /bin/bash
 
-source /etc/cluster-setup.sh
+SGE_ROOT=$( jetpack config gridengine.root )
+source ${SGE_ROOT}/default/common/settings.sh
+
+set -e
+set -x
 
 mkdir -p /etc/sge
 chmod 755 /etc/sge
@@ -32,9 +36,10 @@ else
     # Install temporary cron job to update GPU info after node has been authorized by SGE
     cp ${CYCLECLOUD_SPEC_PATH}/files/modify_gpu_count.cron.sh /etc/sge
     chmod +x /etc/sge/modify_gpu_count.cron.sh 
-    
+
+    # Warning: Crond is picky about the permissions 
     cp ${CYCLECLOUD_SPEC_PATH}/files/gpucron /etc/cron.d/
-    chmod +x /etc/cron.d/gpucron
+    chmod 644 /etc/cron.d/gpucron
     
 fi
     
