@@ -50,6 +50,7 @@ cat <<EOF >> ${CUDA_DIR}/cuda-env.sh
 export CUDNN_VERSION=$CUDA_CUDNN_VERSION
 export CUDNN_HOME=/usr/local/cudnn-${CUDA_CUDNN_VERSION}
 
+export LD_LIBRARY_PATH=\${LD_LIBRARY_PATH}:\${CUDNN_HOME}/lib64
 EOF
 
 
