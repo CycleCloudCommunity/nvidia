@@ -2,7 +2,7 @@
 # Speculatively generate a cuda env.
 # Assumes that some node in the cluster installs cuda in a shared location or on this node.
 
-CUDA_PROFILE_DISABLED=$( jetpack config nvidia.cuda.disable_profile 2> /dev/null )
+CUDA_PROFILE_DISABLED=$( jetpack config nvidia.cuda.disable_profile 2> /dev/null | tr '[:upper:]' '[:lower:]')
 if [ "${CUDA_PROFILE_DISABLED}" == "true" ]; then
     echo "Skipping cuda profile generation."
     exit 0
