@@ -20,7 +20,7 @@ if [ "${CUDA_INSTALL_CUDNN}" != "true" ]; then
     exit 0
 fi
 
-CUDA_CUDNN_URL="s3://com.cyclecomputing.chef-repo.common.us-east-1/nvidia/cudnn-${CUDA_VERSION}-linux-x64-v${CUDA_CUDNN_VERSION}.tgz"
+CUDA_CUDNN_URL="s3://com.cyclecomputing.yumrepo.us-east-1/cycle/nvidia/cudnn-${CUDA_VERSION}-linux-x64-v${CUDA_CUDNN_VERSION}.tgz"
 CUDA_CUDNN_INSTALLER=$( basename ${CUDA_CUDNN_URL} )
 
 set -e
@@ -33,7 +33,7 @@ if [ ! -f ${CUDA_CUDNN_INSTALLER} ]; then
     elif [[ ${CUDA_CUDNN_URL} == http* ]]; then
         wget ${CUDA_CUDNN_URL}
     else
-        pogo --config=/opt/cycle/jetpack/config/chef-pogo.ini get ${CUDA_CUDNN_URL} .
+        pogo --config=/opt/cycle/jetpack/config/thunderball-default.ini get ${CUDA_CUDNN_URL} .
     fi
 fi
 

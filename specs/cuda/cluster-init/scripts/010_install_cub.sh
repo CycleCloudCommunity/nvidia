@@ -20,7 +20,7 @@ if [ "${CUDA_INSTALL_CUB}" != "true" ]; then
     exit 0
 fi
 
-CUDA_CUB_URL="s3://com.cyclecomputing.chef-repo.common.us-east-1/nvidia/cub/${CUDA_CUB_VERSION}.zip"
+CUDA_CUB_URL="s3://com.cyclecomputing.yumrepo.us-east-1/cycle/nvidia/cub/${CUDA_CUB_VERSION}.zip"
 if ! pogo --config=/opt/cycle/jetpack/config/chef-pogo.ini ls ${CUDA_CUB_URL}; then
     # Try to fetch from github if it's not cached
     CUDA_CUB_URL="https://github.com/NVlabs/cub/archive/${CUDA_CUB_VERSION}.zip"
@@ -44,7 +44,7 @@ if [ ! -f ${CUDA_CUB_INSTALLER} ]; then
     elif [[ ${CUDA_CUB_URL} == http* ]]; then
         wget ${CUDA_CUB_URL}
     else
-        pogo --config=/opt/cycle/jetpack/config/chef-pogo.ini get ${CUDA_CUB_URL} .
+        pogo --config=/opt/cycle/jetpack/config/thunderball-default.ini get ${CUDA_CUB_URL} .
     fi
 fi
 
